@@ -199,6 +199,34 @@ Aujourd'hui OpenAI utilise l'algorithme _Byte Pair Encoding_ introduit par Phili
 
 ---
 
+### Construison un BPE tokenizer
+
+---
+
+Les `str` en python sont des séquences imutables de point de codes unicode.
+
+Chaque caractère à un numéro, une catégorie, un nom : 
+
+```python
+import unicodedata
+
+text = "Bonjour 👋"
+
+for char in text:
+    print(char, ord(char), unicodedata.category(char), unicodedata.name(char))
+
+# B    66   Lu LATIN CAPITAL LETTER B
+# o   111   Ll LATIN SMALL LETTER O
+# n   110   Ll LATIN SMALL LETTER N
+# j   106   Ll LATIN SMALL LETTER J
+# o   111   Ll LATIN SMALL LETTER O
+# u   117   Ll LATIN SMALL LETTER U
+# r   114   Ll LATIN SMALL LETTER R
+#     32    Zs SPACE
+# 👋 128075 So WAVING HAND SIGN
+```
+
+---
 
 # Merci !
 
