@@ -106,9 +106,13 @@ def test(func: Callable, keyword: str | None = None):
 
     TESTCASES_DECODE = (
         (
+            ([112, 108, 111, 99, 44, 32, 112, 108, 111, 99], BASE_VOCAB),
+            "ploc, ploc",
+        ),
+        (
             (
-                [112, 108, 111, 99, 44, 32, 112, 108, 111, 99],
-                {**BASE_VOCAB, 256: b"pl", 257: b" pl", 258: b"oc"},
+                [256, 259, 257, 258],
+                {**BASE_VOCAB, 256: b"pl", 257: b" pl", 258: b"oc", 259: b"oc,"},
             ),
             "ploc, ploc",
         ),
