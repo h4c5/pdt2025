@@ -18,17 +18,23 @@ Couleurs :
     - #fbbb2b
     - #222d4e
 */
+:root p {
+    font-size: 1rem;
+}
 :root h1 {
     color: #e12967;
-    font-size: 1.3rem;
+    font-size: 1.6rem;
 }
 :root h2 {
     color: #e12967;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
 }
 :root h3 {
     color: #e12967;
-    font-size: 1.1rem;
+    font-size: 1.4rem;
+}
+:root img {
+    background-color: none;
 }
 :root.lead {
     text-align: center;
