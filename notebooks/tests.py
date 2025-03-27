@@ -145,9 +145,10 @@ def test(func: Callable, keyword: str | None = None):
             break
 
     if not found:
+        funcs_names = "', '".join(TEST_FUNCS)
         raise FunctionNotFound(
             f"Aucun test trouvé pour la fonction {func.__name__}. Les cas de tests "
-            f"sont basés sur les mots clés suivants : '{"', '".join(TEST_FUNCS)}'. "
+            f"sont basés sur les mots clés suivants : '{funcs_names}'. "
             f"Vous pouvez invoquer directement les cas de test d'un mot clé. Exemple : "
             f"test(func, 'encode')"
         )
