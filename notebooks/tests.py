@@ -11,12 +11,12 @@ class TestFailures(Exception):
     """Des cas de tests sont en erreur."""
 
 
-def test_func(func: Callable, test_cases: Iterable[tuple[tuple, Any]]):
+def test_func(func: Callable, test_cases: Iterable[tuple[tuple, Any, str | None]]):
     """Test générique d'une fonction à partir d'une liste de cas de test."""
 
     failures = 0
 
-    for i, (args, expected) in enumerate(test_cases):
+    for i, (args, expected, helper) in enumerate(test_cases):
         # Cas où la fonction doit renvoyer une exception
         if isinstance(expected, type) and issubclass(expected, Exception):
             try:
@@ -28,20 +28,40 @@ def test_func(func: Callable, test_cases: Iterable[tuple[tuple, Any]]):
                     f"❌ TEST {i} | arguments : {args} | "
                     f"exception attendue : {expected} | exception obtenue : {e}"
                 )
+
+                # Affichage de l'aide s'il y en a une
+                if helper:
+                    print(helper)
+
                 failures += 1
 
         # Cas où la fonction ne renvoie pas la bonne sortie
-        elif (result := func(*args)) != expected:
-            print(
-                f"❌ TEST {i} | arguments : {args} | "
-                f"attendu : {expected} | obtenu : {result}"
-            )
-
-            failures += 1
-
-        # Cas où tout roule
         else:
-            print(f"✅ TEST {i}")
+            try:
+                result = func(*args)
+
+            except:
+                # Affichage de l'aide s'il y en a une
+                if helper:
+                    print("❗", helper)
+
+                raise
+
+            if result != expected:
+                print(
+                    f"❌ TEST {i} | arguments : {args} | "
+                    f"attendu : {expected} | obtenu : {result}"
+                )
+
+                # Affichage de l'aide s'il y en a une
+                if helper:
+                    print(helper)
+
+                failures += 1
+
+            # Cas où tout roule
+            else:
+                print(f"✅ TEST {i}")
 
     if failures > 0:
         raise TestFailures(f"{failures} tests en erreur")
@@ -52,16 +72,20 @@ def test(func: Callable, keyword: str | None = None):
 
     # Cas de tests des différentes fonctions
     TESTCASES_TOP_PAIR = (
-        (([1, 2, 1, 2, 3],), ((1, 2), 2)),
-        (([],), None),
-        (([1],), None),
+        (([1, 2, 1, 2, 3],), ((1, 2), 2), "La fonction zip peut vous aider."),
+        (([],), None, "Tenir compte du cas où la liste est vide"),
+        (([1],), None, "Tenir compte du cas où il n'y a qu'un élément"),
     )
 
     TESTCASES_MERGE = (
-        (([1, 2, 3, 1, 2, 3, 4], (2, 3), 5), [1, 5, 1, 5, 4]),
-        (([1, 2, 3, 1, 2, 3, 4], (1, 3), 5), [1, 2, 3, 1, 2, 3, 4]),
-        (([], (1, 2), 3), []),
-        (([1], (1, 2), 3), [1]),
+        (([1, 2, 3, 1, 2, 3, 4], (2, 3), 5), [1, 5, 1, 5, 4], None),
+        (
+            ([1, 2, 3, 1, 2, 3, 4], (1, 3), 5),
+            [1, 2, 3, 1, 2, 3, 4],
+            "Il est possible que la paire ne soit pas présente dans la liste",
+        ),
+        (([], (1, 2), 3), [], "Tenir compte du cas où la liste est vide"),
+        (([1], (1, 2), 3), [1], "Tenir compte du cas où il n'y a qu'un élément"),
     )
 
     TESTCASES_TRAIN = (
@@ -79,9 +103,14 @@ def test(func: Callable, keyword: str | None = None):
                 (263, 108): 264,
                 (264, 97): 265,
             },
+            None,
         ),
-        (("", 266), {}),
-        (("", 100), ValueError),
+        (("", 266), {}, "Tenir compte du cas où le texte est vide"),
+        (
+            ("", 100),
+            ValueError,
+            "Lorsque la taille de vocabulaire demandée est inférieure à 256, il vaut renvoyer une ValueError.",
+        ),
     )
 
     TESTCASES_ENCODE = (
@@ -91,23 +120,30 @@ def test(func: Callable, keyword: str | None = None):
                 {(112, 108): 256, (32, 256): 257, (111, 99): 258, (258, 44): 259},
             ),
             [256, 259, 257, 258],
+            "Indices :\n- Commencer par récupérer la paire dont l'identifiant est le plus bas dans le dictionnaire merges et la fusionner.\n- Itérer jusqu'à ce qu'aucune paire ne soit présente dans merges.\n",
         ),
-        (("ploc, ploc", {}), [112, 108, 111, 99, 44, 32, 112, 108, 111, 99]),
-        (("", {}), []),
+        (("ploc, ploc", {}), [112, 108, 111, 99, 44, 32, 112, 108, 111, 99], None),
+        (("", {}), [], "Prendre en compte le cas où le texte est vide."),
     )
 
     TESTCASES_VOCAB = (
         (
             ({(112, 108): 256, (32, 256): 257, (111, 99): 258},),
             {**BASE_VOCAB, 256: b"pl", 257: b" pl", 258: b"oc"},
+            r"Pour construire le vocabulaire de base, vous pouvez utiliser {idx: bytes([idx]) for idx in range(256)}",
         ),
-        (({},), {**BASE_VOCAB}),
+        (
+            ({},),
+            {**BASE_VOCAB},
+            "Tenir compte du cas où le dictionnaire merges est vide.",
+        ),
     )
 
     TESTCASES_DECODE = (
         (
             ([112, 108, 111, 99, 44, 32, 112, 108, 111, 99], BASE_VOCAB),
             "ploc, ploc",
+            r'Vous pouvez utiliser : b"".join() pour concaténer une liste de bytes',
         ),
         (
             (
@@ -115,9 +151,10 @@ def test(func: Callable, keyword: str | None = None):
                 {**BASE_VOCAB, 256: b"pl", 257: b" pl", 258: b"oc", 259: b"oc,"},
             ),
             "ploc, ploc",
+            None,
         ),
-        (([], BASE_VOCAB), ""),
-        (([256], BASE_VOCAB), Exception),  # Cas où le token n'existe pas
+        (([], BASE_VOCAB), "", None),
+        (([256], BASE_VOCAB), Exception, None),  # Cas où le token n'existe pas
     )
 
     # Association des cas de tests aux fonctions
