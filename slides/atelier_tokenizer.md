@@ -20,16 +20,28 @@ Couleurs :
 
 :root.lead {
     text-align: center;
+    background: url(images/fond.png) no-repeat right bottom, linear-gradient(0deg, #ead283, #91c4aa, #6abfbc);
 }
 
 :root.lead h1,h2,h3 {
     color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 2rem;
 }
 
 :root h1,h2,h3 {
     color: #e12967;
 }
 
+:root.section-title {
+    text-align: center;
+    background: url(images/fond.png) no-repeat right bottom, linear-gradient(45deg, #F5D07A , #F5B784 );
+}
+:root.section-title h1 {
+    color: white;
+    font-size: 2.8rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
 </style>
 
 <!-- Slide de présentation -->
@@ -37,7 +49,6 @@ Couleurs :
 <!-- _class: lead -->
 <!-- _header: "" -->
 <!-- _footer: "" -->
-<!-- _backgroundImage: "linear-gradient(0deg, #ead283, #91c4aa, #6abfbc)"  -->
 
 ![Logo Printemps de la Tech h:400](images/logo_colore.png)
 
@@ -63,9 +74,17 @@ _En mission chez France Travail_
 
 ## Déroulé
 
-1. Introduction à la tokenization
+1. Notions de traitement du langage
 2. Implémentation d'un tokenizer
-3. Remarques et conclusion
+3. Réfléxions et conclusion
+
+---
+
+<!-- _paginate: skip -->
+<!-- _class: section-title -->
+<!-- _footer: "" -->
+
+# Notions de traitement du langage
 
 ---
 
@@ -197,9 +216,14 @@ Aujourd'hui OpenAI utilise l'algorithme _Byte Pair Encoding_ introduit par Phili
 
 [Démo](https://tiktokenizer.vercel.app/)
 
+
 ---
 
-# Construison un BPE tokenizer
+<!-- _paginate: skip -->
+<!-- _class: section-title -->
+<!-- _footer: "" -->
+
+# Construison un Tokenizer
 
 ---
 
@@ -521,9 +545,96 @@ Pour délimiter les tours de conversation, la fin de texte, etc. il y a aussi de
 
 ---
 
-## Implications
+<!-- _paginate: skip -->
+<!-- _class: section-title -->
+<!-- _footer: "" -->
+
+# Limites, réflexions et conclusion
 
 ---
-# Merci !
 
-Questions & Réponses
+### Capacité à raisonner sur les mots
+
+![](images/r_erreur.png)
+
+---
+
+### Capacités arithmétiques
+
+Les performances des modèles notamment en arithmétique sont dépendantes de la tokenization.
+
+_[Integer tokenization is insane](https://www.beren.io/2023-02-04-Integer-tokenization-is-insane/)_
+
+_[Tokenization counts: the impact of tokenization on arithmetic in frontier LLMs](https://arxiv.org/html/2402.14903v1)_
+
+![bg contain right:50%](images/arithmetic_tokenization.png)
+
+---
+
+### Frontière des tokens
+
+Complétons le texte : `le garçon joue à`
+- on obtiens les tokens : `le` ` garçon` ` joue` ` à`
+- le LLM prédit la suite des tokens : `[282, 122357, 74342, 1221]` 
+- `[282, 122357, 74342, 1221,`  `557, 147386]`
+- `le garçon joue à la balle`
+
+A présent, complétons le texte : `le garçon joue à `
+- on obtiens les tokens :`le` ` garçon` ` joue` ` à` ` `
+- le LLM prédit la suite des tokens : `[282, 122357, 74342, 1221, 220]` 
+- `[282, 122357, 74342, 1221, 220, ` `1675, 147386]`
+- `le garçon joue à la balle`
+
+---
+
+### Frontière des tokens : Token healing
+
+Pour éviter les problèmes liés au frontières des tokens, on peut utiliser la technique du _token healing_.
+
+L'idée est de supprimer le dernier token et forcer le premier token généré à matcher le début du token supprimé.
+
+_[The Art of Prompt Design: Prompt Boundaries and Token Healing](https://medium.com/data-science/the-art-of-prompt-design-prompt-boundaries-and-token-healing-3b2448b0be38)_
+
+
+---
+
+### Performances
+
+La tokenization a un impact sur les performances des modèles de langage.
+
+L'utilisation d'un tokenizer entrainé sur des textes anglais provoque :
+- une baisse de performance des LLM
+- une augmentation des coûts d'inférence (jusqu'à 68% dans le papier [1])
+
+[1] _[Tokenizer Choice For LLM Training: Negligible or Crucial?](https://arxiv.org/html/2310.08754v4)_
+
+---
+
+### Coût
+
+
+![h:400](images/nb_tokens_langs.png)
+
+_[Do All Languages Cost the Same? Tokenization in the Era of Commercial Language Models](https://arxiv.org/pdf/2305.13707)_
+
+![bg contain right:30%](images/cost.png)
+
+---
+
+### Un futur sans tokenization ?
+
+Face aux limites de la tokenization, des chercheurs essayent de s'en passer complètement :
+
+_[MEGABYTE: Predicting Million-byte Sequences with Multiscale Transformers](https://arxiv.org/pdf/2305.07185)_
+
+Pour le moment tous les LLMs leader reposent sur la tokenization.
+
+---
+
+<!-- _paginate: skip -->
+<!-- _class: section-title -->
+<!-- _footer: "" -->
+
+# Merci pour votre attention
+
+## Des questions ou remarques ? 
