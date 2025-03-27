@@ -5,6 +5,7 @@ lang: fr
 paginate: true
 header: "![h:40](images/logo_letters.png)"
 footer: "Primptemps de la Tech | Comprendre les tokens par la pratique"
+transition: slide
 ---
 
 <style>
@@ -17,20 +18,27 @@ Couleurs :
     - #fbbb2b
     - #222d4e
 */
-
+:root h1 {
+    color: #e12967;
+    font-size: 1.3rem;
+}
+:root h2 {
+    color: #e12967;
+    font-size: 1.2rem;
+}
+:root h3 {
+    color: #e12967;
+    font-size: 1.1rem;
+}
 :root.lead {
     text-align: center;
     background: url(images/fond.png) no-repeat right bottom, linear-gradient(0deg, #ead283, #91c4aa, #6abfbc);
 }
 
-:root.lead h1,h2,h3 {
+:root.lead h1,:root.lead h2,:root.lead h3 {
     color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     font-size: 2rem;
-}
-
-:root h1,h2,h3 {
-    color: #e12967;
 }
 
 :root.section-title {
@@ -74,9 +82,9 @@ _En mission chez France Travail_
 
 ## Déroulé
 
-1. Notions de traitement du langage
-2. Implémentation d'un tokenizer
-3. Réfléxions et conclusion
+* Notions de traitement du langage
+* Implémentation d'un tokenizer
+* Réfléxions et conclusion
 
 ---
 
@@ -94,12 +102,12 @@ _En mission chez France Travail_
 
 Exemples de cas d'usage : 
 
-- Catégorisation de contenu
-- Extraction d'entités 
-- Analyse de sentiments
-- Traduction
-- Résumé
-- Génération de texte
+* Catégorisation de contenu
+* Extraction d'entités 
+* Analyse de sentiments
+* Traduction
+* Résumé
+* Génération de texte
 
 ---
 
@@ -111,7 +119,10 @@ Les algorithmes fonctionnent à partir d'une représentation sous forme numériq
 text = "Bienvenu au Printemps de la Tech 2025"
 ```
 
-**Première approche :** décomposer le texte sur les espaces puis construire un vocabulaire
+<div data-marpit-fragment>
+
+**Première approche :** décomposer le texte sur les espaces puis construire un vocabulaire 
+
 
 ```python
 words = text.split(" ")
@@ -123,6 +134,8 @@ text_ids = [vocab[word] for word in words]
 text_ids
 # [0, 1, 2, 3, 4, 5, 6]
 ```
+
+</div>
 
 ---
 
@@ -145,12 +158,12 @@ Ce que l'on vient de faire est une **tokenization** : il s'agit de représenter 
 
 ### _Quelques notions de NLP_ : Décompositions en mots
 
-- Le vocabulaire est construit à partir de textes de référence
-- Les mots qui ne se trouvent pas dans les textes de références ne pourront pas être interprétés de la même manière (identifiants manquants)
-- Les mots qui ont la même racine ont des identifiants complètement différents
+* Le vocabulaire est construit à partir de textes de référence
+* Les mots qui ne se trouvent pas dans les textes de références ne pourront pas être interprétés de la même manière (identifiants manquants)
+* Les mots qui ont la même racine ont des identifiants complètement différents
   - Exemple : mobile / automobile / mobilité / immobile, immobilier, etc.
-- Pour adresser les points précédents, il existe des techniques de pré-traitement (mise en minuscule, lemmatization, élimination des mots trop courants, etc.)
-- Pour certains cas d'usage on peut ignorer l'ordre des mots.
+* Pour adresser les points précédents, il existe des techniques de pré-traitement (mise en minuscule, lemmatization, élimination des mots trop courants, etc.)
+* Pour certains cas d'usage on peut ignorer l'ordre des mots.
 
 ---
 
@@ -159,6 +172,8 @@ Ce que l'on vient de faire est une **tokenization** : il s'agit de représenter 
 ```python
 text = "Bienvenu au Printemps de la Tech 2025"
 ```
+
+<div data-marpit-fragment>
 
 **Seconde approche :** décomposer le texte en caractères
 
@@ -169,24 +184,28 @@ text_ids
 # [66, 105, 101, 110, 118, 101, 110, 117, 32, 97, 117, 32, 80, 114, 105, 110, 116, ...]
 ```
 
+</div>
+
 ---
 
 ### _Quelques notions de NLP_ : Décompositions en caractères
 
-- Le vocabulaire se résume aux caractères unicode (appelés __points de code__).
-- Le problème des mots qui partagent la même racine a disparu mais l'ordre des lettres est important.
-- Un même texte compte maintenant bien plus tokens.
+* Le vocabulaire se résume aux caractères unicode (appelés __points de code__).
+* Le problème des mots qui partagent la même racine a disparu mais l'ordre des lettres est important.
+* Un même texte compte maintenant bien plus tokens.
 
 ---
 
-**Quizz** : Combien y a-t-il de points de code [unicode](https://www.unicode.org/versions/Unicode15.0.0/) ?
-
----
 
 **Quizz** : Combien y a-t-il de points de code [unicode](https://www.unicode.org/versions/Unicode15.0.0/) ?
+
+
+<div data-marpit-fragment>
 
 **149 186 !** 
 _(dans la version 15.0)_
+
+</div>
 
 ---
 
@@ -203,8 +222,8 @@ tokens
 # ['Bie', 'ien', 'env', 'nve', 'ven', 'enu', 'nu ', 'u a', ' au', 'au ', 'u P', ...]
 ```
 
-- L'ordre devient moins important
-- Mais la taille du vocabulaire explose
+* L'ordre devient moins important
+* Mais la taille du vocabulaire explose
 
 ---
 
@@ -266,9 +285,13 @@ Il existe plusieurs types d'encodage. Le plus utilisé est `UTF-8`. Cet encodage
 
 <br/>
 
+<div data-marpit-fragment>
+
 > **Rappel :** Un _byte_ en anglais correspond à un _octet_ en français soit 8 _bits_.
 > 
 > Un octet peut donc prendre 2^8 = 256 valeurs
+
+</div>
 
 ---
 
@@ -309,11 +332,17 @@ text_ids = list(text.encode())
 
 Ensuite, l'algorithme crée des nouveaux tokens en fusionnant sucessivement la paire de tokens la plus fréquente.
 
+<div data-marpit-fragment>
+
 Supposons que l'on ait la séquence suivante : 
 
 ```
 aaabdaaabac
 ```
+
+</div>
+<div data-marpit-fragment>
+
 
 La paire la plus fréquente est `aa`, on la remplace par un nouveau token `Z` :
 
@@ -321,6 +350,10 @@ La paire la plus fréquente est `aa`, on la remplace par un nouveau token `Z` :
 ZabdZabac
 Z = aa
 ```
+
+</div>
+<div data-marpit-fragment>
+
 
 La nouvelle paire la plus fréquente est `ab` que l'on remplace par `Y` :
 
@@ -330,6 +363,8 @@ Y=ab
 Z=aa
 ```
 
+</div>
+
 ---
 
 ```
@@ -337,6 +372,8 @@ ZYdZYac
 Y=ab
 Z=aa
 ```
+
+<div data-marpit-fragment>
 
 Maintenant la paire la plus fréquente est `ZY` que l'on remplace par `X` :
 
@@ -347,7 +384,12 @@ Y=ab
 Z=aa
 ```
 
+</div>
+<div data-marpit-fragment>
+
 Il y a désormais 7 tokens : `a, b, c, d, Z, Y, X` et l'encodage de `aaabdaaabac` est `XdXac`
+
+</div>
 
 ---
 
@@ -511,13 +553,23 @@ section {
 
 Une des limites de l'algorithme BPE est que les mots courants tels que `chien` peuvent tout à faire se retrouver dans plusieurs tokens avec une ponctuation différente :  `chien`, ` chien`,`chien.`, `chien,`, `chien!`, `chien?`.
 
+<div data-marpit-fragment>
+
 Cela est problématique pour les modèles de langage car le modèle doit "comprendre" à partir des textes sur lesquels il est entrainté que tous ces tokens désigne le même concept.
 
+</div>
+<div data-marpit-fragment>
+
 C'est également un problème pour les nombres car il peut très bien y avoir uniquement des tokens `1`, `11`, `2` ce qui provoque des tokenization étrange des nombres : 
-- `123` -> `1`, `2`, `3`
-- `112` -> `11`, `2`
+* `123` -> `1`, `2`, `3`
+* `112` -> `11`, `2`
+
+</div>
+<div data-marpit-fragment>
 
 Pour éviter ce genre de phénomène, OpenAI utilise en réalité une variante de l'algorithme BPE qui découpe au préalable le texte à l'aide d'une regex.
+
+</div>
 
 ---
 
@@ -574,16 +626,16 @@ _[Tokenization counts: the impact of tokenization on arithmetic in frontier LLMs
 ### Frontière des tokens
 
 Complétons le texte : `le garçon joue à`
-- on obtiens les tokens : `le` ` garçon` ` joue` ` à`
-- le LLM prédit la suite des tokens : `[282, 122357, 74342, 1221]` 
-- `[282, 122357, 74342, 1221,`  `557, 147386]`
-- `le garçon joue à la balle`
+* on obtiens les tokens : `le` ` garçon` ` joue` ` à`
+* le LLM prédit la suite des tokens : `[282, 122357, 74342, 1221]` 
+* `[282, 122357, 74342, 1221,`  `557, 147386]`
+* `le garçon joue à la balle`
 
 A présent, complétons le texte : `le garçon joue à `
-- on obtiens les tokens :`le` ` garçon` ` joue` ` à` ` `
-- le LLM prédit la suite des tokens : `[282, 122357, 74342, 1221, 220]` 
-- `[282, 122357, 74342, 1221, 220, ` `1675, 147386]`
-- `le garçon joue à la balle`
+* on obtiens les tokens :`le` ` garçon` ` joue` ` à` ` `
+* le LLM prédit la suite des tokens : `[282, 122357, 74342, 1221, 220]` 
+* `[282, 122357, 74342, 1221, 220, ` `1675, 147386]`
+* `le garçon joue à la balle`
 
 ---
 
@@ -603,8 +655,8 @@ _[The Art of Prompt Design: Prompt Boundaries and Token Healing](https://medium.
 La tokenization a un impact sur les performances des modèles de langage.
 
 L'utilisation d'un tokenizer entrainé sur des textes anglais provoque :
-- une baisse de performance des LLM
-- une augmentation des coûts d'inférence (jusqu'à 68% dans le papier [1])
+* une baisse de performance des LLM
+* une augmentation des coûts d'inférence (jusqu'à 68% dans le papier [1])
 
 [1] _[Tokenizer Choice For LLM Training: Negligible or Crucial?](https://arxiv.org/html/2310.08754v4)_
 
@@ -638,3 +690,36 @@ Pour le moment tous les LLMs leader reposent sur la tokenization.
 # Merci pour votre attention
 
 ## Des questions ou remarques ? 
+
+---
+
+## Merci à Andrej Karpathy
+
+Cet ateléier est basé sur sa vidéo [Let's build the GPT Tokenizer ](https://www.youtube.com/watch?v=zduSFxRajkE)
+
+![bg right:60% contain](images/andrej_tokenization.jpg)
+
+---
+<style scoped>
+section {
+    font-size: 1.2rem;
+}
+</style>
+
+## Références
+
+- _[Let's build the GPT Tokenizer ](https://www.youtube.com/watch?v=zduSFxRajkE)_
+- _[Standard unicode](https://www.unicode.org/versions/Unicode15.0.0/)_
+- _[Tiktokenizer](https://tiktokenizer.vercel.app/)_
+- _[Integer tokenization is insane](https://www.beren.io/2023-02-04-Integer-tokenization-is-insane/)_
+- _[Tokenization counts: the impact of tokenization on arithmetic in frontier LLMs](https://arxiv.org/html/2402.14903v1)_
+- _[The Art of Prompt Design: Prompt Boundaries and Token Healing](https://medium.com/data-science/the-art-of-prompt-design-prompt-boundaries-and-token-healing-3b2448b0be38)_
+- _[Tokenizer Choice For LLM Training: Negligible or Crucial?](https://arxiv.org/html/2310.08754v4)_
+- _[Do All Languages Cost the Same? Tokenization in the Era of Commercial Language Models](https://arxiv.org/pdf/2305.13707)_
+- _[MEGABYTE: Predicting Million-byte Sequences with Multiscale Transformers](https://arxiv.org/pdf/2305.07185)_
+- _[Integer tokenization is insane](https://www.beren.io/2023-02-04-Integer-tokenization-is-insane/)_
+- _[Tokenization counts: the impact of tokenization on arithmetic in frontier LLMs](https://arxiv.org/html/2402.14903v1)_
+- _[The Art of Prompt Design: Prompt Boundaries and Token Healing](https://medium.com/data-science/the-art-of-prompt-design-prompt-boundaries-and-token-healing-3b2448b0be38)_
+- _[Tokenizer Choice For LLM Training: Negligible or Crucial?](https://arxiv.org/html/2310.08754v4)_
+- _[Do All Languages Cost the Same? Tokenization in the Era of Commercial Language Models](https://arxiv.org/pdf/2305.13707)_
+- _[MEGABYTE: Predicting Million-byte Sequences with Multiscale Transformers](https://arxiv.org/pdf/2305.07185)_
