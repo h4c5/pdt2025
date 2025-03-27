@@ -64,7 +64,9 @@ Couleurs :
 <!-- _header: "" -->
 <!-- _footer: "" -->
 
-![Logo Printemps de la Tech h:400](images/logo_colore.png)
+<p align="center">
+    <img alt="Logo Printemps de la Tech" height="400" src="images/logo_colore.png" />
+</p>
 
 # Comprendre les tokens par la pratique
 
