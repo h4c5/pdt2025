@@ -340,8 +340,8 @@ Il y a désormais 7 tokens : `a, b, c, d, Z, Y, X` et l'encodage de `aaabdaaabac
 
 * On démarre avec un token par octet : de `0` à `255`
 * On construit ensuite des nouveaux tokens en fusionnant la paire la plus fréquente : 
-  * On détermine la parie la plus fréquente
-  * On lui associe un nouvel indice : `256`, `257`, ...
+  * On détermine la paire la plus fréquente
+  * On lui associe un nouvel indice : `256`, puis `257`, etc.
 * Avantages : 
   * ✅ _Out-of-vocabulary_ : Plus de problème.
   * 🆒 _Racine des mots_ : Les caractères qui apparaissent souvent sont fusionnées ensembles.
