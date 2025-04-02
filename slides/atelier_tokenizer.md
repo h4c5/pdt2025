@@ -119,12 +119,12 @@ Exemples de cas d'usage :
 
 ---
 
-### _Quelques notions de NLP_ : Décompositions en mots
+### _Quelques notions de NLP_ : Décomposition en mots
 
 Les algorithmes fonctionnent à partir d'une représentation sous forme numérique.
 
 ```python
-text = "Bienvenu au Printemps de la Tech 2025"
+text = "Bienvenue au Printemps de la Tech 2025"
 ```
 
 <div data-marpit-fragment>
@@ -134,7 +134,7 @@ text = "Bienvenu au Printemps de la Tech 2025"
 
 ```python
 words = text.split(" ")
-# ['Bienvenu', 'au', 'Printemps', 'de', 'la', 'Tech', '2025']
+# ['Bienvenue', 'au', 'Printemps', 'de', 'la', 'Tech', '2025']
 
 vocab = {word: i for i, word in enumerate(words)}
 
@@ -147,38 +147,36 @@ text_ids
 
 ---
 
-### _Quelques notions de NLP_ : Décompositions en mots
+### _Quelques notions de NLP_ : Décomposition en mots
 
 ```python
 text
-# "Bienvenu au Printemps de la Tech 2025"
+# "Bienvenue au Printemps de la Tech 2025"
 
 text_ids
 # [0, 1, 2, 3, 4, 5, 6]
 
 vocab
-# {'Bienvenu': 0, 'au': 1, 'Printemps': 2, 'de': 3, 'la': 4, 'Tech': 5, '2025': 6}
+# {'Bienvenue': 0, 'au': 1, 'Printemps': 2, 'de': 3, 'la': 4, 'Tech': 5, '2025': 6}
 ```
 
 Ce que l'on vient de faire est une **tokenization** : il s'agit de représenter le texte par des identifiants, les **tokens**.
 
 ---
 
-### _Quelques notions de NLP_ : Décompositions en mots
+### _Quelques notions de NLP_ : Limites de la décomposition en mots
 
-* Le vocabulaire est construit à partir de textes de référence
-* Les mots qui ne se trouvent pas dans les textes de références ne pourront pas être interprétés de la même manière (identifiants manquants)
-* Les mots qui ont la même racine ont des identifiants complètement différents
-  - Exemple : mobile / automobile / mobilité / immobile, immobilier, etc.
-* Pour adresser les points précédents, il existe des techniques de pré-traitement (mise en minuscule, lemmatization, élimination des mots trop courants, etc.)
-* Pour certains cas d'usage on peut ignorer l'ordre des mots.
+* ⚠ _Out-of-vocabulary_ : Les mots inconnus sont remplacés par `<Unknown>`.
+* ⚠ _Racine des mots_ : Identifiants différents pour les mots de même racine (mobile / automobile / immobile, ...)
+* ✅ _Taille des séquences_ : Raisonnable, un token par mot.
+* ⚠ _Taille du vocabulaire_ : Grand vocabulaire pour gérer le multilingue.
 
 ---
 
-### _Quelques notions de NLP_ : Décompositions en caractères
+### _Quelques notions de NLP_ : Décomposition en caractères
 
 ```python
-text = "Bienvenu au Printemps de la Tech 2025"
+text = "Bienvenue au Printemps de la Tech 2025"
 ```
 
 <div data-marpit-fragment>
@@ -188,22 +186,23 @@ text = "Bienvenu au Printemps de la Tech 2025"
 ```python
 text_ids = [ord(c) for c in text]
 text_ids
-#   B,   i,   e,   n,   v,   e,   n,   u,  ·,  a,   u,  ·,  P,   r,   i,   n,   t,
-# [66, 105, 101, 110, 118, 101, 110, 117, 32, 97, 117, 32, 80, 114, 105, 110, 116, ...]
+#   B,   i,   e,   n,   v,   e,   n,   u,  e,   ·,  a,   u,  ·,  P,   r,   i,   n,   t,
+# [66, 105, 101, 110, 118, 101, 110, 117, 101, 32, 97, 117, 32, 80, 114, 105, 110, 116, ...]
 ```
 
+Le vocabulaire est l'ensemble des caractères unicode.
 </div>
 
 ---
 
 ### _Quelques notions de NLP_ : Décompositions en caractères
 
-* Le vocabulaire se résume aux caractères unicode (appelés __points de code__).
-* Le problème des mots qui partagent la même racine a disparu mais l'ordre des lettres est important.
-* Un même texte compte maintenant bien plus tokens.
+* ✅ _Out-of-vocabulary_ : Plus de problème.
+* ✅ _Racine des mots_ : Plus de problème.
+* ⚠ _Taille des séquences_ : Très importante, un token par caractère.
+* ❓ _Taille du vocabulaire_ : à votre avis ?
 
 ---
-
 
 **Quizz** : Combien y a-t-il de points de code [unicode](https://www.unicode.org/versions/Unicode15.0.0/) ?
 
@@ -215,6 +214,9 @@ _(dans la version 15.0)_
 
 </div>
 
+
+<!-- SLIDE RETIREE PAR MANQUE DE TEMPS
+
 ---
 
 ### _Quelques notions de NLP_ : N-grams
@@ -222,22 +224,24 @@ _(dans la version 15.0)_
 Une troisième approche est de décomposer le texte en **n-grams** :
 
 ```python
-text = "Bienvenu au Printemps de la Tech 2025"
+text = "Bienvenue au Printemps de la Tech 2025"
 
 N = 3
 tokens = [text[i:i+N] for i in range(0, len(text))]
 tokens
-# ['Bie', 'ien', 'env', 'nve', 'ven', 'enu', 'nu ', 'u a', ' au', 'au ', 'u P', ...]
+# ['Bie', 'ien', 'env', 'nve', 'ven', 'enu', 'nue', 'ue ', 'e a', ' au', 'au ', 'u P', ...]
 ```
 
 * L'ordre devient moins important
 * Mais la taille du vocabulaire explose
 
+-->
+
 ---
 
 ### Tokenization "moderne"
 
-![bg right:70%](images/screen_tiktokenizer.png)
+![bg contain right:60%](images/screen_tiktokenizer.png)
 
 Aujourd'hui OpenAI utilise l'algorithme _Byte Pair Encoding_ introduit par Philip Gage en 1994 pour ChatGPT.
 
@@ -254,91 +258,22 @@ Aujourd'hui OpenAI utilise l'algorithme _Byte Pair Encoding_ introduit par Phili
 
 ---
 
-Les `str` en python sont des séquences imutables de point de codes unicode.
+### Caractères unicode
 
-Chaque caractère à un numéro, une catégorie, un nom : 
+Un texte est une séquence de caractères unicode (appelés points de code).
 
-```python
-import unicodedata
+Les points de codes sont ensuites encodés en octets (bytes) via un encodage.
 
-text = "Bonjour 👋"
+Ci-dessous l'encodage `UTF-8` de `Bonjour 👋`
 
-for char in text:
-    print(char, ord(char), unicodedata.category(char), unicodedata.name(char))
-
-# B    66   Lu LATIN CAPITAL LETTER B
-# o   111   Ll LATIN SMALL LETTER O
-# n   110   Ll LATIN SMALL LETTER N
-# j   106   Ll LATIN SMALL LETTER J
-# o   111   Ll LATIN SMALL LETTER O
-# u   117   Ll LATIN SMALL LETTER U
-# r   114   Ll LATIN SMALL LETTER R
-#     32    Zs SPACE
-# 👋 128075 So WAVING HAND SIGN
-```
+![Encodage utf-8 de bonjour](images/encodage.svg)
 
 ---
 
-Les chaines de caractères peuvent ensuite être encodées pour permettre la sauvegarde, la lecture, etc.
+L'idée de l'algorithme BPE est de construire des tokens en fusionnant deux à deux des octets de l'encodage `UTF-8`.
 
-Il existe plusieurs types d'encodage. Le plus utilisé est `UTF-8`. Cet encodage représente chaque point de code par une suite de 1 à 4 bytes en fonction de son indice :
-
-
-| Premier point de code | Dernier code point | Byte 1       | Byte 2   | Byte 3   | Byte 4   |
-| --------------------- | ------------------ | ------------ | -------- | -------- | -------- |
-| U+0000 (0)            | U+007F (127)       | **0**yyyzzzz |          |          |          |
-| U+0080 (128)          | U+07FF (2047)      | **110**xxxyy | 10yyzzzz |          |          |
-| U+0800 (2048)         | U+FFFF (65535)     | **1110**wwww | 10xxxxyy | 10yyzzzz |          |
-| U+010000 (65536)      | U+10FFFF (1114111) | **11110**uvv | 10vvwwww | 10xxxxyy | 10yyzzzz |
-
-<br/>
-
-<div data-marpit-fragment>
-
-> **Rappel :** Un _byte_ en anglais correspond à un _octet_ en français soit 8 _bits_.
-> 
-> Un octet peut donc prendre 2^8 = 256 valeurs
-
-</div>
 
 ---
-
-```python
-text = "Bonjour 👋"
-
-for char in text:
-    for byte in char.encode("utf-8"):
-        print(char, "|", byte, f"| code hexadécimal : {byte:02x}")
-
-# B  |  66 | code hexadécimal : 42
-# o  | 111 | code hexadécimal : 6f
-# n  | 110 | code hexadécimal : 6e
-# j  | 106 | code hexadécimal : 6a
-# o  | 111 | code hexadécimal : 6f
-# u  | 117 | code hexadécimal : 75
-# r  | 114 | code hexadécimal : 72
-#    |  32 | code hexadécimal : 20
-# 👋 | 240 | code hexadécimal : f0
-# 👋 | 159 | code hexadécimal : 9f
-# 👋 | 145 | code hexadécimal : 91
-# 👋 | 139 | code hexadécimal : 8b
-```
-
----
-
-L'algorithme BPE part de la liste des octets de l'encodage UTF-8 : 
-
-```python
-
-text = "Bonjour 👋"
-text_ids = list(text.encode())
-
-# [66, 111, 110, 106, 111, 117, 114, 32, 240, 159, 145, 139]
-```
-
----
-
-Ensuite, l'algorithme crée des nouveaux tokens en fusionnant sucessivement la paire de tokens la plus fréquente.
 
 <div data-marpit-fragment>
 
@@ -383,7 +318,7 @@ Z=aa
 
 <div data-marpit-fragment>
 
-Maintenant la paire la plus fréquente est `ZY` que l'on remplace par `X` :
+Maintenant, la paire la plus fréquente est `ZY` que l'on remplace par `X` :
 
 ```
 XdXac
@@ -398,6 +333,20 @@ Z=aa
 Il y a désormais 7 tokens : `a, b, c, d, Z, Y, X` et l'encodage de `aaabdaaabac` est `XdXac`
 
 </div>
+
+---
+
+### Résumé de l'algorithme BPE
+
+* On démarre avec un token par octet : de `0` à `255`
+* On construit ensuite des nouveaux tokens en fusionnant la paire la plus fréquente : 
+  * On détermine la parie la plus fréquente
+  * On lui associe un nouvel indice : `256`, `257`, ...
+* Avantages : 
+  * ✅ _Out-of-vocabulary_ : Plus de problème.
+  * 🆒 _Racine des mots_ : Les caractères qui apparaissent souvent sont fusionnées ensembles.
+  * ✅ _Taille des séquences_ : Maitrisée par la taille de vocabulaire.
+  * ✅ _Taille du vocabulaire_ : Fixée à l'avance.
 
 ---
 
@@ -615,7 +564,7 @@ Pour délimiter les tours de conversation, la fin de texte, etc. il y a aussi de
 
 ### Capacité à raisonner sur les mots
 
-![](images/r_erreur.png)
+![llms qui n'arrivent pas à compter les r dans erreur](images/r_erreur.png)
 
 ---
 
@@ -666,7 +615,11 @@ L'utilisation d'un tokenizer entrainé sur des textes anglais provoque :
 * une baisse de performance des LLM
 * une augmentation des coûts d'inférence (jusqu'à 68% dans le papier [1])
 
+<div data-marpit-fragment>
+
 [1] _[Tokenizer Choice For LLM Training: Negligible or Crucial?](https://arxiv.org/html/2310.08754v4)_
+
+</div>
 
 ---
 
@@ -703,7 +656,7 @@ Pour le moment tous les LLMs leader reposent sur la tokenization.
 
 ## Merci à Andrej Karpathy
 
-Cet ateléier est basé sur sa vidéo [Let's build the GPT Tokenizer ](https://www.youtube.com/watch?v=zduSFxRajkE)
+Cet atelier est basé sur sa vidéo [Let's build the GPT Tokenizer ](https://www.youtube.com/watch?v=zduSFxRajkE)
 
 ![bg right:60% contain](images/andrej_tokenization.jpg)
 
